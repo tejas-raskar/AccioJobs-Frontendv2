@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int              @id @default(autoincrement())
+  fullName           String
+  dateOfBirth        DateTime
+  gender             String?          
+  email              String           @unique
+  phoneNumber        String?         
+  address            String?          
+  city               String?          
+  state              String?          
+  postalCode         String?          
+  country            String?          
+  currentJobTitle    String?          
+  resume             Bytes?           // Store resume directly in the database
+  linkedInUrl        String?          // Optional LinkedIn profile URL
+  coverLetter        Bytes?           // Store cover letter directly in the database
+  profilePicture     Bytes?           // Store profile picture directly in the database
+  jobTypePreferences String?          // e.g., Full-time, Part-time, Contract
+  availabilityStart  DateTime?        // Optional start date
+  willingToRelocate  Boolean          @default(false)
+  
+  education          Education[]
+  workExperience     WorkExperience[]
+  skills             String[]
+  references         String[]
+  intrestedCategories String[]
+  relevantJobs       RelevantJob[]
+}
+
+model Education {
+  id               Int     @id @default(autoincrement())
+  userId           Int
+  degree           String  // e.g., Bachelor’s, Master’s, High School Diploma
+  fieldOfStudy     String?
+  institutionName  String?
+  startDate        DateTime?
+  endDate          DateTime?
+
+  user             User    @relation(fields: [userId], references: [id])
+}
+
+model WorkExperience {
+  id              Int     @id @default(autoincrement())
+  userId          Int
+  companyName     String
+  position        String
+  startDate       DateTime
+  endDate         DateTime?
+
+  user            User    @relation(fields: [userId], references: [id])
+}
+
+
+model RelevantJob {
+  id       Int     @id @default(autoincrement())
+  resume   Bytes?
+  userId   Int
+  jobId    Int
+  user     User    @relation(fields: [userId], references: [id])
+  job      Job     @relation(fields: [jobId], references: [id])
+}
+
+model Job {
+  id          Int      @id @default(autoincrement())
+  postedOn    DateTime
+  company     String
+  companyLogo Bytes?   // Store company logo directly in the database
+  position    String
+  tags        String
+  applyUrl    String
+  description String
+  location    String
+  salary      String
+  category    String
+  relevantJobs RelevantJob[]
+}
+
+
+
