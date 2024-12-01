@@ -105,9 +105,16 @@ export const SignUp = () => {
       if (formData.profilePicture) validateFileSize(formData.profilePicture);
 
       console.log("Form submitted:", formData);
-      navigate('/landing');
+      
+      // Show success popup
+      alert("User created successfully!");
+      
+      // Wait 2 seconds before navigating
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      navigate('/jobs');
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error creating user:', error);
     }
   };
 
